@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 export default function Vegs() {
   const [vegCodes, setVegCodes] = useState(VEG_CODES);
-
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -16,13 +15,12 @@ export default function Vegs() {
         ...veg,
         inputValue: "",
       }));
-      if (!storageVegs) return;
       const sortedVegs = storageVegsIn.sort(
         (v1: Veg, v2: Veg) => v1.correctNum - v2.correctNum
       );
       setVegCodes(sortedVegs);
     }
-    // Focus on the first input after loading
+
     inputRefs.current[0]?.focus();
   }, []);
 
@@ -35,18 +33,15 @@ export default function Vegs() {
       (v1: Veg, v2: Veg) => v1.correctNum - v2.correctNum
     );
     setVegCodes(sortedVegs);
-    inputRefs.current[0]?.focus(); // Focus on the first input after reload
+    inputRefs.current[0]?.focus();
   };
 
   const handleInputChange = (index: number, value: string) => {
     const newVegCodes = [...vegCodes];
-
     let newCorrectNum = newVegCodes[index].correctNum;
-    // Check if the input matches the code
+
     if (value === newVegCodes[index].code) {
-      // Increment correctNum if the code matches
       newCorrectNum += 1;
-      // Move focus to the next input
       const nextInput = inputRefs.current[index + 1];
       if (nextInput) {
         nextInput.focus();
@@ -61,13 +56,10 @@ export default function Vegs() {
     newVegCodes[index] = {
       ...newVegCodes[index],
       correctNum: newCorrectNum,
-      inputValue: (newVegCodes[index].inputValue = value),
+      inputValue: value,
     };
+
     localStorage.setItem("vegCodes", JSON.stringify(newVegCodes));
-
-    // Update the input value
-    newVegCodes[index].inputValue = value;
-
     setVegCodes(newVegCodes);
   };
 
@@ -75,40 +67,67 @@ export default function Vegs() {
     vegCodes.filter((veg) => veg.correctNum == 0).length === 0;
 
   return (
-    <div className="text-white mt-4">
-      <div className="flex justify-center items-center my-5 gap-2">
-        <button className="btn" onClick={reload}>
-          reload
+    <div className="mx-auto w-full max-w-5xl px-4 md:px-8 py-8 bg-gray-900 rounded-xl shadow-lg text-white">
+      <div className="flex justify-center items-center mb-6">
+        <button
+          className="bg-yellow hover:bg-yellow-400 text-black px-6 py-3 rounded-md text-lg font-semibold transition-colors duration-300"
+          onClick={reload}
+        >
+          Reload
         </button>
       </div>
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-4">
         {vegCodes.map((vegCode, index) => (
-          <li key={index} className="">
-            <div className="flex items-center gap-4">
-              <div>{vegCode.title}</div>
+          <li
+            key={index}
+            className="flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-800 px-4 py-3 rounded-md shadow-sm"
+          >
+            {/* Veg title */}
+            <div className="text-base md:text-lg font-medium mb-2 md:mb-0 md:w-1/4">
+              {vegCode.title}
+            </div>
+
+            {/* Input + Status */}
+            <div className="flex flex-row items-center gap-4 w-full md:w-3/4">
               <input
                 type="number"
-                max={2}
                 ref={(el: HTMLInputElement | null) => {
                   inputRefs.current[index] = el;
-                }} // Correctly typed ref callback without return value
-                className="inp"
+                }}
+                className="bg-gray-700 text-white px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 w-32 text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 value={vegCode.inputValue || ""}
                 disabled={vegCode.inputValue === vegCode.code}
-                placeholder="enter code"
+                placeholder="Enter code"
                 onChange={(e) => handleInputChange(index, e.target.value)}
               />
-              <div>
+
+              {/* Icons */}
+              <div className="flex items-center">
                 {vegCode.inputValue === vegCode.code && <GreenCheckMark />}
                 {vegCode.inputValue.length === 2 &&
                   vegCode.inputValue !== vegCode.code && <RedXMark />}
               </div>
-              <div>{vegCode.correctNum}</div>
+
+              {/* Correct count */}
+              <div className="text-sm md:text-base text-gray-300">
+                {vegCode.correctNum}
+              </div>
             </div>
           </li>
         ))}
       </ul>
+
+      {isBtnActive && (
+        <div className="flex justify-center items-center mt-8">
+          <button
+            className="bg-green-500 hover:bg-green-400 text-white px-6 py-3 rounded-md text-lg font-semibold transition-colors duration-300"
+            onClick={() => alert("All codes correct!")}
+          >
+            Submit Codes
+          </button>
+        </div>
+      )}
     </div>
   );
 }

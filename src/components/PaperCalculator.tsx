@@ -17,45 +17,75 @@ const PaperCalculator = ({ setTotal }: PaperCalculatorProps) => {
     inputRef.current?.focus();
   };
 
-  const reverseList = () => {
-    return [...sumList].reverse();
-  };
+  const reverseList = () => [...sumList].reverse();
 
   const total = sumList.reduce((acc, item) => acc + item, 0);
   setTotal(total);
 
   return (
-    <div className="container mx-auto p-4 text-white">
-      <h1>paper calculator</h1>
-      <div className="flex flex-col gap-4 ">
-        <label htmlFor="">add sum</label>
-        <input
-          className="inp"
-          type="number"
-          value={newSum}
-          onChange={(e: any) => setNewSum(parseInt(e.target.value, 10) || 0)}
-          ref={inputRef}
-          min={0}
-          max={10000}
-        />
-        <button
-          className={`${newSum > 0 ? "btn" : "dis-btn"}`}
-          disabled={newSum <= 0}
-          onClick={handleClick}
-        >
-          add
-        </button>
-      </div>
-      <div>
-        <ul>
-          {reverseList().map((sum, key) => (
-            <li key={key}>{sum} ₪</li>
-          ))}
-        </ul>
-      </div>
-      <br />
+    <div className="mx-auto p-4 md:p-8 w-full max-w-4xl bg-gray-900 rounded-xl shadow-lg text-white">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center capitalize">
+        Paper Calculator
+      </h2>
 
-      <div className="border-t-2 border-white">total: {total} ₪</div>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        {/* Add Sum Input Section */}
+        <div className="flex flex-col gap-4 w-full md:w-1/2">
+          <label htmlFor="sum" className="text-lg md:text-xl font-medium">
+            Add Sum:
+          </label>
+
+          <input
+            id="sum"
+            className="bg-gray-700 text-white px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 w-32 text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            type="number"
+            value={newSum}
+            onChange={(e) => setNewSum(parseInt(e.target.value, 10) || 0)}
+            ref={inputRef}
+            min={0}
+            max={10000}
+            placeholder="Enter amount"
+          />
+
+          <button
+            className={`w-full md:w-auto px-6 py-3 text-lg font-medium rounded-lg transition-colors duration-300 ${
+              newSum > 0
+                ? "bg-yellow-500 hover:bg-yellow-400"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
+            disabled={newSum <= 0}
+            onClick={handleClick}
+          >
+            Add
+          </button>
+        </div>
+
+        {/* List Section */}
+        <div className="w-full md:w-1/2">
+          <h3 className="text-lg md:text-xl font-semibold mb-4 text-center">
+            Added Sums
+          </h3>
+
+          <ul className="space-y-2">
+            {reverseList().map((sum, index) => (
+              <li
+                key={index}
+                className="flex justify-between items-center px-4 py-2 bg-gray-800 rounded-md shadow-sm"
+              >
+                <span className="text-sm md:text-base">{index + 1}.</span>
+                <span className="text-lg md:text-xl font-medium">{sum} ₪</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-700 mt-10 pt-6 text-center">
+        <p className="text-xl md:text-2xl font-bold text-yellow-500">
+          Total: {total} ₪
+        </p>
+      </div>
     </div>
   );
 };

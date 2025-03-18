@@ -44,6 +44,7 @@ const coins: Coin[] = [
 type CoinCalculatorProps = {
   setTotal: any;
 };
+
 const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
   const [selectedCoinIndex, setSelectedCoinIndex] = useState<number>(0);
   const [weight, setWeight] = useState<number>(0);
@@ -73,32 +74,26 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
 
     setCoinList([...coinList, { coin: selectedCoin, weight, amount, total }]);
 
-    // Update coin options and reset inputs
     const updatedCoinOptions = coinOptions.filter(
-      (item, ind) => ind !== selectedCoinIndex
+      (_, ind) => ind !== selectedCoinIndex
     );
     setCoinOptions(updatedCoinOptions);
     setSelectedCoinIndex(0);
     setWeight(0);
     setAmount(0);
-    // focus
+
     inputRef.current?.focus();
   };
 
   const handleRemoveCoin = (index: number) => {
     const removedCoin = coinList[index].coin;
-
-    // Update the coin list by removing the selected coin
     const updatedCoinList = coinList.filter((_, ind) => ind !== index);
     setCoinList(updatedCoinList);
 
-    // Add the removed coin back to the options list
     const updatedCoinOptions = [...coinOptions, removedCoin].sort(
       (c1, c2) => c1.value - c2.value
     );
     setCoinOptions(updatedCoinOptions);
-
-    // Reset the selected coin index
     setSelectedCoinIndex(0);
   };
 
@@ -107,7 +102,7 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
     value: number
   ) => {
     if (value === 0) {
-      setter(NaN); // Set the value to NaN (not a number) to clear the input
+      setter(NaN);
     }
   };
 
@@ -116,120 +111,140 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
     value: number
   ) => {
     if (isNaN(value)) {
-      setter(0); // Reset to 0 if the input is empty or NaN
+      setter(0);
     }
   };
 
   const totalValue = coinList.reduce((total, item) => total + item.total, 0);
   setTotal(totalValue);
+
   return (
-    <div className="container mx-auto p-4 text-white">
-      <h2 className="text-xl font-bold mb-4 text-center">Coin Calculator</h2>
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex items-center justify-between w-full gap-2">
-          {coinOptions.length > 0 && (
-            <>
-              <img
-                src={coinOptions[selectedCoinIndex].image}
-                alt={coinOptions[selectedCoinIndex].name}
-                className="w-12 h-12 mr-2"
-              />
-              <select
-                className="inp"
-                value={selectedCoinIndex}
-                onChange={(e) => {
-                  setSelectedCoinIndex(parseInt(e.target.value, 10));
-                  setAmount(0);
-                  setWeight(0);
-                }}
-              >
-                {coinOptions.map((coin, index) => (
-                  <option key={coin.name} value={index}>
-                    {coin.name}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-        </div>
+    <div className="mx-auto p-4 md:p-8 w-full max-w-4xl bg-gray-900 rounded-xl shadow-lg text-white">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+        Coin Calculator
+      </h2>
 
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        {/* Coin Selection */}
         {coinOptions.length > 0 && (
-          <>
-            <div className="flex items-center gap-2">
-              <span>Weight (g): </span>
-              <input
-                ref={inputRef}
-                type="number"
-                value={isNaN(weight) ? "" : weight}
-                onFocus={() => handleFocus(setWeight, weight)}
-                onBlur={() => handleBlur(setWeight, weight)}
-                onChange={(e) => {
-                  handleWeightChange(e.target.value);
-                }}
-                className="inp mt-2"
-                placeholder="0"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span>Number of Coins: </span>
-              <input
-                type="number"
-                value={isNaN(amount) ? "" : amount}
-                onFocus={() => handleFocus(setAmount, amount)}
-                onBlur={() => handleBlur(setAmount, amount)}
-                onChange={(e) => handleAmountChange(e.target.value)}
-                className="inp mt-2"
-                placeholder="0"
-              />
-            </div>
-
-            <button
-              className={` mt-4 bg-gray-500 ${amount == 0 ? "dis-btn" : "btn"}`}
-              disabled={amount === 0}
-              onClick={handleAddCoin}
+          <div className="flex items-center gap-4 w-full md:w-1/2">
+            <img
+              src={coinOptions[selectedCoinIndex].image}
+              alt={coinOptions[selectedCoinIndex].name}
+              className="w-16 h-16 md:w-20 md:h-20 object-contain"
+            />
+            <select
+              className="bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
+              value={selectedCoinIndex}
+              onChange={(e) => {
+                setSelectedCoinIndex(parseInt(e.target.value, 10));
+                setAmount(0);
+                setWeight(0);
+              }}
             >
-              Add Coin to List
-            </button>
-          </>
+              {coinOptions.map((coin, index) => (
+                <option key={coin.name} value={index}>
+                  {coin.name}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
 
-        <div className="w-full mt-6">
-          {coinList.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center mb-2 p-2 border-b border-gray-500"
-            >
-              <div className="flex flex-col w-full pb-2">
-                <div className="flex gap-2 items-center justify-between">
-                  <img
-                    src={item.coin.image}
-                    alt={item.coin.name}
-                    className="w-12 h-12 mr-2"
-                  />
-                  <div>{item.coin.name}</div>
-                  <div>
-                    <button
-                      onClick={() => handleRemoveCoin(index)}
-                      className="btn bg-red-400 ml-3"
-                    >
-                      Remove
-                    </button>
+        {/* Inputs */}
+        <div className="flex flex-col gap-4 w-full md:w-1/2">
+          {/* Weight */}
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor="weight">Weight (g):</label>
+            <input
+              id="weight"
+              min={0}
+              ref={inputRef}
+              type="number"
+              value={isNaN(weight) ? "" : weight}
+              onFocus={() => handleFocus(setWeight, weight)}
+              onBlur={() => handleBlur(setWeight, weight)}
+              onChange={(e) => handleWeightChange(e.target.value)}
+              className="bg-gray-700 text-white px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 w-32 text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              placeholder="0"
+            />
+          </div>
+
+          {/* Amount */}
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor="amount">Number of Coins:</label>
+            <input
+              min={0}
+              id="amount"
+              type="number"
+              value={isNaN(amount) ? "" : amount}
+              onFocus={() => handleFocus(setAmount, amount)}
+              onBlur={() => handleBlur(setAmount, amount)}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              className="bg-gray-700 text-white px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 w-32 text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              placeholder="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Add Coin Button */}
+      {coinOptions.length > 0 && (
+        <button
+          className={`mt-6 w-full md:w-auto px-6 py-3 text-lg font-medium rounded-lg ${
+            amount === 0
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-400 transition-colors duration-300"
+          }`}
+          disabled={amount === 0}
+          onClick={handleAddCoin}
+        >
+          Add Coin to List
+        </button>
+      )}
+
+      {/* Coin List */}
+      <div className="mt-10">
+        {coinList.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {coinList.map((item, index) => (
+              <div
+                key={index}
+                className="bg-gray-800 rounded-lg p-4 flex flex-col gap-4 shadow-md"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.coin.image}
+                      alt={item.coin.name}
+                      className="w-12 h-12 object-contain"
+                    />
+                    <h3 className="font-semibold">{item.coin.name}</h3>
                   </div>
+                  <button
+                    onClick={() => handleRemoveCoin(index)}
+                    className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-md transition-colors duration-300"
+                  >
+                    Remove
+                  </button>
                 </div>
-                <div className="flex items-center justify-between mt-2">
-                  <div>{item.weight} g</div>
-                  <div>{item.amount} coins</div>
-                  <div>{item.total.toFixed(2)} ₪</div>
+
+                <div className="flex justify-between text-sm text-gray-300">
+                  <p>{item.weight} g</p>
+                  <p>{item.amount} coins</p>
+                  <p>{item.total.toFixed(2)} ₪</p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400">No coins added yet.</p>
+        )}
+      </div>
 
-        <div className="font-semibold text-xl text-white">
-          Total Value of All Coins: {totalValue.toFixed(2)} ₪
-        </div>
+      {/* Total Value */}
+      <div className="mt-8 text-center text-2xl font-bold text-yellow-500">
+        Total Value: {totalValue.toFixed(2)} ₪
       </div>
     </div>
   );

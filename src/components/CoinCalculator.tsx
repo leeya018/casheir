@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 interface Coin {
   name: string;
@@ -102,7 +103,7 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
     value: number
   ) => {
     if (value === 0) {
-      setter(NaN);
+      setter(0);
     }
   };
 
@@ -114,6 +115,8 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
       setter(0);
     }
   };
+
+  console.log({ amount });
 
   const totalValue = coinList.reduce((total, item) => total + item.total, 0);
   setTotal(totalValue);
@@ -194,7 +197,7 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
           className={`mt-6 w-full md:w-auto px-6 py-3 text-lg font-medium rounded-lg ${
             amount === 0
               ? "bg-gray-600 cursor-not-allowed"
-              : "bg-yellow-500 hover:bg-yellow-400 transition-colors duration-300"
+              : "bg-yellow text-black hover:bg-yellow-400 transition-colors duration-300"
           }`}
           disabled={amount === 0}
           onClick={handleAddCoin}
@@ -223,9 +226,10 @@ const CoinCalculator = ({ setTotal }: CoinCalculatorProps) => {
                   </div>
                   <button
                     onClick={() => handleRemoveCoin(index)}
-                    className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-md transition-colors duration-300"
+                    className="bg-red-500 hover:bg-red-400 text-white p-2 rounded-md transition-colors duration-300 flex items-center justify-center"
+                    aria-label="Remove coin"
                   >
-                    Remove
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
 

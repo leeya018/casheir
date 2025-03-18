@@ -49,9 +49,9 @@ const PaperCalculator = ({ setTotal }: PaperCalculatorProps) => {
 
           <button
             className={`w-full md:w-auto px-6 py-3 text-lg font-medium rounded-lg transition-colors duration-300 ${
-              newSum > 0
-                ? "bg-yellow-500 hover:bg-yellow-400"
-                : "bg-gray-600 cursor-not-allowed"
+              newSum === 0
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-yellow text-black "
             }`}
             disabled={newSum <= 0}
             onClick={handleClick}

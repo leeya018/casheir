@@ -22,12 +22,12 @@ function CashView() {
       <div className="container mx-auto px-4 md:px-10 py-10 max-w-7xl">
         {/* Title */}
         <h1 className="flex justify-center mt-14 text-3xl md:text-5xl font-bold">
-          Cash Page
+          Cash Reconciliation{" "}
         </h1>
 
         {/* Buttons */}
         <div className="flex flex-row items-center justify-center gap-5 md:gap-10 mt-10 text-lg md:text-xl font-semibold">
-          <button
+          {/* <button
             className={`transition-all ${
               chosen === "cash_count"
                 ? "bg-yellow text-black p-4 md:p-5 rounded-xl"
@@ -36,8 +36,8 @@ function CashView() {
             onClick={() => setChosen("cash_count")}
           >
             Cash Count
-          </button>
-          <button
+          </button> */}
+          {/* <button
             className={`transition-all ${
               chosen === "codes"
                 ? "bg-yellow text-black p-4 md:p-5 rounded-xl"
@@ -46,7 +46,7 @@ function CashView() {
             onClick={() => setChosen("codes")}
           >
             Codes
-          </button>
+          </button> */}
         </div>
 
         {/* Content */}
@@ -70,7 +70,7 @@ function CashView() {
             </div>
           )}
 
-          {chosen === "codes" && <Vegs />}
+          {/* {chosen === "codes" && <Vegs />} */}
         </div>
       </div>
     </div>

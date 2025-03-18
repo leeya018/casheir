@@ -1,59 +1,8 @@
-import { Timestamp } from "firebase/firestore";
 import { Veg } from "./interfaces/Veg";
-
-const moment = require("moment");
 
 export const TITLES = {
   cash: "cash",
   security: "security",
-};
-
-const TIME_FORMAT = "DD/MM/YY HH:mm";
-export const timeDifferenceDuration = (startDate: Date, endDate: Date) => {
-  // Parse the dates using moment
-
-  try {
-    console.log(startDate);
-    let start = moment(startDate, TIME_FORMAT);
-
-    let end = moment(endDate, TIME_FORMAT);
-
-    // Calculate the difference in milliseconds
-    const duration = moment.duration(end.diff(start));
-
-    // Extract hours and minutes
-
-    return duration;
-  } catch (error: any) {
-    console.log("function - timeDifferenceDuration" + error.message);
-    console.log({ startDate, endDate });
-  }
-};
-export const timeDifference = (startDate: Date, endDate: Date) => {
-  console.log("timeDifference");
-  // Parse the dates using moment
-  const duration = timeDifferenceDuration(startDate, endDate);
-  console.log(duration.asHours());
-  const hours = Math.floor(duration.asHours());
-  const minutes = duration.minutes();
-
-  // Format as HH:MM
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-    2,
-    "0"
-  )}`;
-};
-
-export const convertTime = (timestamp: Timestamp) => {
-  try {
-    if (!timestamp) throw new Error("timestamp date is not defind");
-    const date = timestamp.toDate();
-
-    // Convert Date to moment object and format as YYYY-MM-DD
-    return moment(date).format(TIME_FORMAT);
-  } catch (error: any) {
-    console.log("function - convertTime" + error.message);
-  }
 };
 
 export const MONTHS = [
@@ -105,13 +54,6 @@ export const VEG_CODES: Veg[] = [
   { title: "קישוא", code: "50", correctNum: 0, inputValue: "" },
   { title: "אבטיח", code: "80", correctNum: 0, inputValue: "" },
 ];
-
-export const getDbUrl = () => {
-  if (process.env.NODE_ENV) {
-    return "https://console.firebase.google.com/u/0/project/apartments-invest/firestore";
-  }
-  return "https://console.firebase.google.com/u/0/project/dating-empire/firestore";
-};
 
 export const netlifyUrl = "https://app.netlify.com/sites/work-lee/deploys";
 export const githubUrl = "https://github.com/leeya018/work";
